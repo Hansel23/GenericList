@@ -1,0 +1,34 @@
+{
+  "name": "Hansel23/GenericList",
+  "description": "Generic list with interface. Methods are based on the list types of some other famous languages, like java or c#",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Benjamin Bruska",
+      "email": "benjamin.bruska@gmx.de"
+    }
+  ],
+
+  "require": {
+      "php": ">=5.5"
+  },
+
+  "require-dev": {
+      "codeception/codeception": "2.*",
+      "satooshi/php-coveralls": "dev-master"
+  },
+
+  "autoload": {
+        "psr-4": {
+            "Hansel23\\GenericList\\": "src/"
+        }
+    },
+  
+  "autoload-dev": {
+        "psr-4": {
+            "Hansel23\\GenericList\\Tests\\Unit\\": "tests/unit/"
+        }
+    }
+}
