@@ -24,6 +24,33 @@ You can build an instance of the GenericList on the fly: *new GenericList( YourO
 
 Now you can use typehints for this list.
 
+You can iterate over the list like you do it with a normal array. 
+
+Also there are many useful methods:
+
+ - **add( $item )** Adds a new item to the list
+ - **addAll( ListsItems $list )** Adds another list to the items. No item will be overwritten
+ - **merge( ListsItems $list )** Merges lhe list with another list. If the index already exists, the item will be overwritten with the new one.
+ - **remove( $item )** Removes an item from the list. Only the first item that is equal to the given item will be removed.
+ - **removeByIndex( $index )** Removes the item with the given index. If the index doesn't exist an InvalidIndexException will be thrown.
+ - **removeAll( ListsItems $list )** Removes all items from another list from the current list.
+ - **removeAllExcept( ListsItems $list )** Removes all items from the list except the items of the given list.
+ - **contains( $item )** Looks if the given item exists in the list.
+ - **indexOf( $item )** Returns the index of the first item that equals to the given item. If there is no equal item in the list, the method returns -1.
+ - **lastIndexOf( $item )** Returns the index of the last item that equals to the given item. If there is no equal item in the list, the method returns -1.
+ - **set( $index, $item )** Overwrites the item with the given index in the list. This method is equal to $list[$index] = $item, except that the index must be an integer and already existing. 
+ - **get( $index )** Returns the item with the given index. If the index doesn't exist, an InvalidIndexException will be thrown.
+ - **toArray()** Returns an array-representation of the list, so you can use array functions.
+ - **reverse()** Reverses the whole list.
+ - **clear()** Clears the list. All items will be removed and the indices resetted.
+ - **sortBy( SortsLists $sorter )** Sorts the list by a list sorter.
+ - **find( FindsItems $filter )** Returns the first item that will be found by your list filter.
+ - **findLast( FindsItems $filter )** Returns the last item that will be found by your list filter.
+ - **findAll( FindsItems $filter )** Returns a list of all items that will be found by your list filter.
+ - **getItemType()** Returns the type of the items in the list.
+   	
+All exceptions are extended from the ListException.
+
 ### List Sorters
 
 To sort a list, you have to create a sorter, that implements the **SortsLists** interface.
