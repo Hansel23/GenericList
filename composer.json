@@ -3,7 +3,7 @@
   "description": "Generic list with interface. Methods are based on the list types of some other famous languages, like java or c#",
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "Benjamin Bruska",

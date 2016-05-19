@@ -1,4 +1,9 @@
+[![Build Status](https://travis-ci.org/Hansel23/GenericLists.svg?branch=master)](https://travis-ci.org/Hansel23/GenericLists)
 [![Coverage Status](https://coveralls.io/repos/github/Hansel23/GenericLists/badge.svg?branch=master)](https://coveralls.io/github/Hansel23/GenericLists?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/hansel23/generic-lists/v/stable)](https://packagist.org/packages/hansel23/generic-lists)
+[![Latest Unstable Version](https://poser.pugx.org/hansel23/generic-lists/v/unstable)](https://packagist.org/packages/hansel23/generic-lists)
+[![Total Downloads](https://poser.pugx.org/hansel23/generic-lists/downloads)](https://packagist.org/packages/hansel23/generic-lists)
+[![License](https://poser.pugx.org/hansel23/generic-lists/license)](https://packagist.org/packages/hansel23/generic-lists)
 
 # GenericList
 Generic list with interface. It's based on the list type of some other famous languages, like java or c#
