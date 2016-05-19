@@ -1,7 +1,7 @@
-[![Coverage Status](https://coveralls.io/repos/github/Hansel23/GenericList/badge.svg?branch=master)](https://coveralls.io/github/Hansel23/GenericList?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Hansel23/GenericListss/badge.svg?branch=master)](https://coveralls.io/github/Hansel23/GenericListss?branch=master)
 
 # GenericList
-Generic list with interface. It's based on the list types of some other famous languages, like java or c#
+Generic list with interface. It's based on the list type of some other famous languages, like java or c#
 
 ### My Motivation
 
@@ -72,22 +72,28 @@ a new list of the same type that contains all objects filtered by your filter.
 
 ### Example
 
+*using list type directly*
+
+    <?php  
+		$list = new List( YourClass::class );
+		$list->add( new YourClass() );
+    ?>
+
 *creating the list type*
 
     <?php  
-		class AddressList 
-			extends GenericList  
+		class AddressList extends GenericList  
 		{
 			public function __construct()  
 			{  
 				parent::__construct( Address::class ); 
 			}  
 		}
+    ?>
 *creating a sorter*
 
     <?php  
-	class AddressSorter 
-		implements SortsLists  
+	class AddressSorter implements SortsLists  
 	{
 		protected $sortDirection;
 
@@ -135,6 +141,7 @@ a new list of the same type that contains all objects filtered by your filter.
 			return $result;
 		}
 	}
+    ?>
 *using typehint for the list and sort with the created sorter*
 
 	<?php
@@ -146,12 +153,12 @@ a new list of the same type that contains all objects filtered by your filter.
 			$addresses->sortBy( $addressSorter );			
 		}
 	}
+    ?>
 
 *creating a filter*
 
 	<?php
-	class BeginningStreetNameFilter 
-		implements FindsItems
+	class BeginningStreetNameFilter implements FindsItems
 	{
 		private $beginningStreetName;
 
@@ -170,6 +177,7 @@ a new list of the same type that contains all objects filtered by your filter.
 			return ( preg_match( sprintf( '!^%s!', $this->beginningStreetName ), $address->getStreet() ) );
 		}
 	}
+    ?>
 
 *using the filter*
 
@@ -178,4 +186,5 @@ a new list of the same type that contains all objects filtered by your filter.
 
 	$firstAddressFound 			= $addresses->find( $beginningStreetNameFilter );
 	$lastAddressFound 			= $addresses->findLast( $beginningStreetNameFilter );
-	$foundAddresses				= $addresses->findAll( $beginningStreetNameFilter );
+	$foundAddresses				= $addresses->findAll( $beginningStreetNameFilter );	
+    ?>
