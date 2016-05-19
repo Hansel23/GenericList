@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit\Fixtures;
+namespace Hansel23\GenericLists\Tests\Unit\Fixtures;
 
 /**
  * Interface Testable
  *
- * @package Hansel23\GenericList\Tests\Unit\Fixtures
+ * @package Hansel23\GenericLists\Tests\Unit\Fixtures
  */
 interface Testable
 {

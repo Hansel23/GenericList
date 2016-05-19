@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList;
+namespace Hansel23\GenericLists;
 
 /**
  * Class FloatList
  *
- * @package Hansel23\GenericList
+ * @package Hansel23\GenericLists
  */
 final class FloatList extends GenericList
 {

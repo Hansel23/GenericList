@@ -1,8 +1,8 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit;
+namespace Hansel23\GenericLists\Tests\Unit;
 
-use Hansel23\GenericList\StringList;
-use Hansel23\GenericList\Tests\Unit\Fixtures\Stringable;
+use Hansel23\GenericLists\StringList;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\Stringable;
 
 class StringListTest extends \Codeception\TestCase\Test
 {
@@ -16,7 +16,7 @@ class StringListTest extends \Codeception\TestCase\Test
 	/**
 	 * @dataProvider InvalidItemProvider
 	 *
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidTypeException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
 	 */
 	public function testIfInvalidItemsThrowsException( $item )
 	{
@@ -69,7 +69,7 @@ class StringListTest extends \Codeception\TestCase\Test
 
 	/**
 	 * @dataProvider InvalidArrayProvider
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidTypeException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
 	 */
 	public function testIfCreatingFromInvalidArrayThrowsException( array $invalidArray )
 	{

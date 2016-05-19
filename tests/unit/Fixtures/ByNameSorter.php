@@ -1,12 +1,12 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit\Fixtures;
+namespace Hansel23\GenericLists\Tests\Unit\Fixtures;
 
-use Hansel23\GenericList\Interfaces\SortsLists;
+use Hansel23\GenericLists\Interfaces\SortsLists;
 
 /**
  * Class ByNameSorter
  *
- * @package Fortuneglobe\PermissionManagementService\Hansel23\GenericListSorters
+ * @package Fortuneglobe\PermissionManagementService\Hansel23\GenericListsSorters
  */
 class ByNameSorter implements SortsLists
 {

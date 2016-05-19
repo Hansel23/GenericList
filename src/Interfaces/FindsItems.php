@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList\Interfaces;
+namespace Hansel23\GenericLists\Interfaces;
 
 /**
  * Interface FindsItems
  *
- * @package Hansel23\GenericList\Interfaces
+ * @package Hansel23\GenericLists\Interfaces
  */
 interface FindsItems
 {

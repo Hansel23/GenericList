@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList\Exceptions;
+namespace Hansel23\GenericLists\Exceptions;
 
 /**
  * Class InvalidIndexException
  *
- * @package Hansel23\GenericList\Exceptions
+ * @package Hansel23\GenericLists\Exceptions
  */
 class InvalidIndexException	extends ListException
 {

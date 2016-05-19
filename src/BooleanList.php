@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList;
+namespace Hansel23\GenericLists;
 
 /**
  * Class BooleanList
  *
- * @package Hansel23\GenericList
+ * @package Hansel23\GenericLists
  */
 final class BooleanList	extends GenericList
 {

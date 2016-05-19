@@ -14,4 +14,3 @@ vendor
 composer.lock
 tests/_output/*
 docs/coverage
-tests/_output/*

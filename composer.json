@@ -1,5 +1,5 @@
 {
-  "name": "Hansel23/GenericList",
+  "name": "Hansel23/GenericListss",
   "description": "Generic list with interface. Methods are based on the list types of some other famous languages, like java or c#",
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -22,13 +22,13 @@
 
   "autoload": {
         "psr-4": {
-            "Hansel23\\GenericList\\": "src/"
+            "Hansel23\\GenericLists\\": "src/"
         }
     },
   
   "autoload-dev": {
         "psr-4": {
-            "Hansel23\\GenericList\\Tests\\Unit\\": "tests/unit/"
+            "Hansel23\\GenericLists\\Tests\\Unit\\": "tests/unit/"
         }
     }
 }

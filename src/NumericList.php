@@ -1,12 +1,12 @@
 <?php
-namespace Hansel23\GenericList;
+namespace Hansel23\GenericLists;
 
-use Hansel23\GenericList\Exceptions\InvalidTypeException;
+use Hansel23\GenericLists\Exceptions\InvalidTypeException;
 
 /**
  * Class NumericList
  *
- * @package Hansel23\GenericList
+ * @package Hansel23\GenericLists
  */
 final class NumericList	extends GenericList
 {

@@ -1,12 +1,12 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit\Fixtures;
+namespace Hansel23\GenericLists\Tests\Unit\Fixtures;
 
-use Hansel23\GenericList\Interfaces\FindsItems;
+use Hansel23\GenericLists\Interfaces\FindsItems;
 
 /**
  * Class BeginningNameFilter
  *
- * @package Hansel23\GenericList\Tests\Unit\Fixtures
+ * @package Hansel23\GenericLists\Tests\Unit\Fixtures
  */
 class BeginningNameFilter implements FindsItems
 {

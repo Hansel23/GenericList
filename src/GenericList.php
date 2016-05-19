@@ -1,17 +1,17 @@
 <?php
-namespace Hansel23\GenericList;
+namespace Hansel23\GenericLists;
 
 use ArrayAccess;
-use Hansel23\GenericList\Exceptions\InvalidIndexException;
-use Hansel23\GenericList\Exceptions\InvalidTypeException;
-use Hansel23\GenericList\Interfaces\FindsItems;
-use Hansel23\GenericList\Interfaces\ListsItems;
-use Hansel23\GenericList\Interfaces\SortsLists;
+use Hansel23\GenericLists\Exceptions\InvalidIndexException;
+use Hansel23\GenericLists\Exceptions\InvalidTypeException;
+use Hansel23\GenericLists\Interfaces\FindsItems;
+use Hansel23\GenericLists\Interfaces\ListsItems;
+use Hansel23\GenericLists\Interfaces\SortsLists;
 
 /**
  * Class GenericList
  *
- * @package Hansel23\GenericList
+ * @package Hansel23\GenericLists
  */
 class GenericList implements ListsItems, ArrayAccess
 {

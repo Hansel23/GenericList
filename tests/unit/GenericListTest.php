@@ -1,11 +1,11 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit;
+namespace Hansel23\GenericLists\Tests\Unit;
 
-use Hansel23\GenericList\GenericList;
-use Hansel23\GenericList\Tests\Unit\Fixtures\ByNameSorter;
-use Hansel23\GenericList\Tests\Unit\Fixtures\BeginningNameFilter;
-use Hansel23\GenericList\Tests\Unit\Fixtures\Testable;
-use Hansel23\GenericList\Tests\Unit\Fixtures\TestType;
+use Hansel23\GenericLists\GenericList;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\ByNameSorter;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\BeginningNameFilter;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\Testable;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\TestType;
 
 /**
  * Class BaseListTest
@@ -39,7 +39,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 
 	/**
 	 * @dataProvider invalidTypes
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidTypeException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
 	 */
 	public function testIfAddingInvalidTypesThrowsException( $invalidType )
 	{
@@ -49,7 +49,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	}
 
 	/**
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidTypeException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
 	 */
 	public function testIfAddingInvalidListThrowsException()
 	{
@@ -326,7 +326,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 
 	/**
 	 * @dataProvider testObjects
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidIndexException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidIndexException
 	 */
 	public function testIfSettingInvalidIndexThrowsException( array $testItems )
 	{

@@ -1,10 +1,10 @@
 <?php
-namespace Hansel23\GenericList\Exceptions;
+namespace Hansel23\GenericLists\Exceptions;
 
 /**
  * Class ListException
  *
- * @package Hansel23\GenericList\Exceptions
+ * @package Hansel23\GenericLists\Exceptions
  */
 class ListException extends \Exception
 {

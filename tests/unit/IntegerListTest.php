@@ -1,7 +1,7 @@
 <?php
-namespace Hansel23\GenericList\Tests\Unit;
+namespace Hansel23\GenericLists\Tests\Unit;
 
-use Hansel23\GenericList\IntegerList;
+use Hansel23\GenericLists\IntegerList;
 
 class IntegerListTest extends \Codeception\TestCase\Test
 {
@@ -15,7 +15,7 @@ class IntegerListTest extends \Codeception\TestCase\Test
 	/**
 	 * @dataProvider InvalidItemProvider
 	 *
-	 * @expectedException \Hansel23\GenericList\Exceptions\InvalidTypeException
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
 	 */
 	public function testIfInvalidItemsThrowsException( $item )
 	{

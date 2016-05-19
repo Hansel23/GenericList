@@ -1,12 +1,12 @@
 <?php
-namespace Hansel23\GenericList\Interfaces;
+namespace Hansel23\GenericLists\Interfaces;
 
 use Iterator, Countable;
 
 /**
  * Interface ListsItems
  *
- * @package Hansel23\GenericList\Interfaces
+ * @package Hansel23\GenericLists\Interfaces
  */
 interface ListsItems extends Iterator, Countable
 {
