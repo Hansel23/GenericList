@@ -1,5 +1,5 @@
 {
-  "name": "Hansel23/GenericListss",
+  "name": "hansel23/generic-lists",
   "description": "Generic list with interface. Methods are based on the list types of some other famous languages, like java or c#",
   "minimum-stability": "dev",
   "prefer-stable": true,
