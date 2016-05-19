@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/Hansel23/GenericListss/badge.svg?branch=master)](https://coveralls.io/github/Hansel23/GenericListss?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Hansel23/GenericLists/badge.svg?branch=master)](https://coveralls.io/github/Hansel23/GenericLists?branch=master)
 
 # GenericList
 Generic list with interface. It's based on the list type of some other famous languages, like java or c#
