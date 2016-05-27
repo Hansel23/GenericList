@@ -32,7 +32,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	{
 		return [
 			[
-				false, null, true, 1, 'test', new TestType( 'test' )
+				false, null, true, 1, 'test', new TestType( 'test' ), []
 			]
 		];
 	}
@@ -65,9 +65,14 @@ class GenericListTest extends \Codeception\TestCase\Test
 		return [
 			[
 				Testable::class,
-				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' )],
 				[ new TestType( 222 ), new TestType( true ), new TestType( 'abc' ) ]
-			]
+			],
+			[
+				gettype( [] ),
+				[ [ 1 ], [ false ], [ 'test' ] ],
+				[ [ 222 ], [ true ], [ 'abc' ] ]
+			],
 		];
 	}
 

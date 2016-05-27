@@ -400,7 +400,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function getType( $item )
 	{
-		if ( !is_scalar( $item ) )
+		if ( is_object( $item ) )
 		{
 			return get_class( $item );
 		}
