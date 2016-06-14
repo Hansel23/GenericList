@@ -38,13 +38,6 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	abstract protected function isItemValid( $item );
 
 	/**
-	 * @param ListsItems $list
-	 *
-	 * @return bool
-	 */
-	abstract protected function isValidList( ListsItems $list );
-
-	/**
 	 * @param $item
 	 *
 	 * @return $this
@@ -442,7 +435,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function validateListType( ListsItems $list )
 	{
-		if ( !$this->isValidList( $list ) )
+		if ( $list->getItemType() != $this->getItemType() )
 		{
 			throw new InvalidTypeException
 			(
@@ -455,7 +448,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 			);
 		}
 	}
-
+	
 	/**
 	 * @param $index
 	 *
