@@ -299,7 +299,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	public function current()
 	{
-		if ( isset($this->items[ $this->currentPosition ]) )
+		if ( isset( $this->items[ $this->currentPosition ] ) )
 		{
 			return $this->items[ $this->currentPosition ];
 		}
@@ -328,7 +328,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	public function valid()
 	{
-		return isset($this->items[ $this->currentPosition ]);
+		return isset( $this->items[ $this->currentPosition ] );
 	}
 
 	/**
