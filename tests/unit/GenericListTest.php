@@ -2,8 +2,8 @@
 namespace Hansel23\GenericLists\Tests\Unit;
 
 use Hansel23\GenericLists\GenericList;
-use Hansel23\GenericLists\Tests\Unit\Fixtures\ByNameSorter;
 use Hansel23\GenericLists\Tests\Unit\Fixtures\BeginningNameFilter;
+use Hansel23\GenericLists\Tests\Unit\Fixtures\ByNameSorter;
 use Hansel23\GenericLists\Tests\Unit\Fixtures\Testable;
 use Hansel23\GenericLists\Tests\Unit\Fixtures\TestType;
 
@@ -20,7 +20,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 
 		$count = 10;
 
-		for( $i = 1; $i <= 10; $i++ )
+		for ( $i = 1; $i <= 10; $i++ )
 		{
 			$list->add( new \stdClass() );
 		}
@@ -32,8 +32,8 @@ class GenericListTest extends \Codeception\TestCase\Test
 	{
 		return [
 			[
-				false, null, true, 1, 'test', new TestType( 'test' ), []
-			]
+				false, null, true, 1, 'test', new TestType( 'test' ), [ ],
+			],
 		];
 	}
 
@@ -65,13 +65,31 @@ class GenericListTest extends \Codeception\TestCase\Test
 		return [
 			[
 				Testable::class,
-				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' )],
-				[ new TestType( 222 ), new TestType( true ), new TestType( 'abc' ) ]
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
 			],
 			[
-				gettype( [] ),
+				gettype( [ ] ),
 				[ [ 1 ], [ false ], [ 'test' ] ],
-				[ [ 222 ], [ true ], [ 'abc' ] ]
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '1', 'false', '1.0', '[]' ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 1.0, -200.0, -1.0, 0.0 ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true, false ],
+			],
+			[
+				GenericList::NUMERIC,
+				[ 0, '1', 2.0 ],
 			],
 		];
 	}
@@ -79,122 +97,426 @@ class GenericListTest extends \Codeception\TestCase\Test
 	/**
 	 * @dataProvider validItems
 	 */
-	public function testIfListContainsItem( $itemType, array $validItems)
+	public function testIfListContainsItem( $itemType, array $validItems )
 	{
 		$list = new GenericList( $itemType );
 
-		foreach( $validItems as $item )
+		foreach ( $validItems as $item )
 		{
 			$list->add( $item );
 		}
 
-		foreach( $validItems as $item )
+		foreach ( $validItems as $item )
 		{
 			$this->assertTrue( $list->contains( $item ) );
 		}
 	}
 
+	public function containingItemProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				new TestType( 222 ),
+				false,
+			],
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				new TestType( false ),
+				true,
+			],
+		];
+	}
+
 	/**
-	 * @dataProvider validItems
+	 * @dataProvider containingItemProvider
 	 */
-	public function testIfListDoesNotContainItem( $itemType, array $validItems, array $otherValidItems )
+	public function testListContainingItem( $itemType, array $items, $containingItem, $listContainsItem )
 	{
 		$list = new GenericList( $itemType );
 
-		foreach( $validItems as $item )
+		foreach ( $items as $item )
 		{
 			$list->add( $item );
 		}
 
-		$this->assertFalse( $list->contains( $otherValidItems[0] ) );
+		$this->assertEquals( $listContainsItem, $list->contains( $containingItem ) );
+	}
+
+	public function addingAllItemsProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 222 ), new TestType( true ) ],
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ), 
+				  new TestType( 222 ), new TestType( true ) ],
+			],
+			[
+				gettype( [ ] ),
+				[ [ 1 ], [ false ], [ 'test' ] ],
+				[ [ 222 ], [ true ], [ 'abc' ] ],
+				[ [ 1 ], [ false ], [ 'test' ], [ 222 ], [ true ], [ 'abc' ] ],
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '[]' ],
+				[ '', '2', 'true', '-1.0', 'test' ],
+				[ 'string', '[]', '', '2', 'true', '-1.0', 'test' ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[ 2, PHP_INT_MAX, 0 ],
+				[ 1, PHP_INT_MAX, -1, 0, 2, PHP_INT_MAX, 0 ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 1.0, -200.0, -1.0, 0.0 ],
+				[ 2.0, 0.0, -100.0, 3.0 ],
+				[ 1.0, -200.0, -1.0, 0.0, 2.0, 0.0, -100.0, 3.0 ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true ],
+				[ false, true, false, true ],
+				[ true, false, true, false, true, false, true ],
+			],
+		];
 	}
 
 	/**
-	 * @dataProvider validItems
+	 * @dataProvider addingAllItemsProvider
 	 */
-	public function testIfMergingOverridesOriginalList( $itemType, array $validItems, array $otherValidItems )
+	public function testAddingAll(
+		$itemType, array $items, array $addingAllItems, array $expectedItems
+	)
 	{
 		$list1 = new GenericList( $itemType );
 
-		foreach( $validItems as $item )
+		foreach ( $items as $item )
 		{
 			$list1->add( $item );
 		}
 
 		$list2 = new GenericList( $itemType );
-		foreach( $otherValidItems as $item )
+		foreach ( $addingAllItems as $item )
+		{
+			$list2->add( $item );
+		}
+
+		$list1->addAll( $list2 );
+
+		$expectedList = new GenericList( $itemType );
+		foreach ( $expectedItems as $item )
+		{
+			$expectedList->add( $item );
+		}
+
+		$this->assertEquals( $expectedList, $list1 );
+	}
+
+	public function mergingItemsProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 222 ), new TestType( true ) ],
+				[ new TestType( 222 ), new TestType( true ), new TestType( 'test' ) ],
+			],
+			[
+				gettype( [ ] ),
+				[ [ 1 ], [ false ], [ 'test' ] ],
+				[ [ 222 ], [ true ], [ 'abc' ] ],
+				[ [ 222 ], [ true ], [ 'abc' ] ],
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '[]' ],
+				[ '', '2', 'true', '-1.0', 'test' ],
+				[ '', '2', 'true', '-1.0', 'test' ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[ 2 ],
+				[ 2, PHP_INT_MAX, -1, 0 ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 1.0, -200.0, -1.0, 0.0 ],
+				[ 2.0, 0.0, -100.0, 3.0 ],
+				[ 2.0, 0.0, -100.0, 3.0 ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true ],
+				[ false, true, false, true ],
+				[ false, true, false, true ],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider mergingItemsProvider
+	 */
+	public function testIfMergingOverridesOriginalList(
+		$itemType, array $items, array $mergingItems, array $expectedItems
+	)
+	{
+		$list1 = new GenericList( $itemType );
+
+		foreach ( $items as $item )
+		{
+			$list1->add( $item );
+		}
+
+		$list2 = new GenericList( $itemType );
+		foreach ( $mergingItems as $item )
 		{
 			$list2->add( $item );
 		}
 
 		$list1->merge( $list2 );
-		$list2->rewind();
 
-		$this->assertEquals( $list2, $list1 );
+		$expectedList = new GenericList( $itemType );
+		foreach ( $expectedItems as $item )
+		{
+			$expectedList->add( $item );
+		}
+
+		$this->assertEquals( $expectedList, $list1 );
+	}
+
+	public function removeItemsProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 1 ), new TestType( 'test' ) ],
+				[ new TestType( false ) ],
+			],
+			[
+				gettype( [ ] ),
+				[ [ 0 ], [ false ], [ 'test' ] ],
+				[ [ false ] ],
+				[ [ 0 ], [ 'test' ] ],
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '[]' ],
+				[ '' ],
+				[ 'string', '[]' ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[  ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 1.0, -200.0, -1.0, 0.0, -1.0 ],
+				[ -200.0, -1.0 ],
+				[ 1.0, 0.0 ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true ],
+				[ false ],
+				[  true, true ],
+			],
+		];
 	}
 
 	/**
-	 * @dataProvider validItems
+	 * @dataProvider removeItemsProvider
 	 */
-	public function testAddingAllAndRemovingAll( $itemType, array $validItems, array $otherValidItems )
+	public function testRemovingItem( $itemType, array $items, array $removingItems, array $expectedItems )
 	{
 		$list1 = new GenericList( $itemType );
 
-		foreach( $validItems as $item )
+		foreach ( $items as $item )
 		{
 			$list1->add( $item );
 		}
 
-		$originalList = clone $list1;
+		foreach ( $removingItems as $item )
+		{
+			$list1->remove( $item );
+		}
+
+		$expectedList = new GenericList( $itemType );
+		foreach ( $expectedItems as $item )
+		{
+			$expectedList->add( $item );
+		}
+
+		$this->assertEquals( $expectedList, $list1 );
+	}
+
+	public function removingAllItemsProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 1 ), new TestType( 'test' ) ],
+				[ new TestType( false ) ],
+			],
+			[
+				gettype( [ ] ),
+				[ [ 1 ], [ false ], [ 'test' ] ],
+				[ [ 1 ] ],
+				[ [ false ], [ 'test' ] ],
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '[]', '-1.0', 'test' ],
+				[ '-1.0', 'string' ],
+				[ '[]', 'test' ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[ PHP_INT_MAX ],
+				[ 1, -1, 0 ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 1.0, -200.0, -1.0, 0.0 ],
+				[ 1.0, -200.0, -1.0, 0.0 ],
+				[ ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true, false, true, false ],
+				[ false ],
+				[ true, true, true ],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider removingAllItemsProvider
+	 */
+	public function testRemovingAll( $itemType, array $items, array $itemsToRemove, array $expectedItems )
+	{
+		$list1 = new GenericList( $itemType );
+
+		foreach ( $items as $item )
+		{
+			$list1->add( $item );
+		}
 
 		$list2 = new GenericList( $itemType );
-		foreach( $otherValidItems as $item )
+		foreach ( $itemsToRemove as $item )
 		{
 			$list2->add( $item );
 		}
-
-		$list1->addAll( $list2 );
-
-		$this->assertEquals( count( $validItems ) + count( $otherValidItems ), $list1->count() );
 
 		$list1->removeAll( $list2 );
 
-		$this->assertEquals( $originalList, $list1 );
+		$expectedList = new GenericList( $itemType );
+		foreach ( $expectedItems as $item )
+		{
+			$expectedList->add( $item );
+		}
+
+		$this->assertEquals( $expectedList, $list1 );
+	}
+
+	public function removingExceptItemsProvider()
+	{
+		return [
+			[
+				Testable::class,
+				[ new TestType( 1 ), new TestType( false ), new TestType( 'test' ) ],
+				[ new TestType( 1 ), new TestType( true ) ],
+				[ new TestType( 1 ) ],
+			],
+			[
+				gettype( [ ] ),
+				[ [ 1 ], [ false ], [ 'test' ] ],
+				[ [ true ], [ 'test' ] ],
+				[ [ 'test' ] ],
+			],
+			[
+				GenericList::STRING,
+				[ 'string', '[]' ],
+				[ '', '2', 'true', '-1.0', 'test' ],
+				[ ],
+			],
+			[
+				GenericList::INT,
+				[ 1, PHP_INT_MAX, -1, 0 ],
+				[ -1, PHP_INT_MAX ],
+				[ -1, PHP_INT_MAX ],
+			],
+			[
+				GenericList::FLOAT,
+				[ 3.0, -100.0, -1.0, 0.0 ],
+				[ 2.0, 0.0, -100.0, 3.0 ],
+				[ 0.0, -100.0, 3.0 ],
+			],
+			[
+				GenericList::BOOL,
+				[ true, false, true, false, true ],
+				[ false ],
+				[ false, false ],
+			],
+		];
 	}
 
 	/**
-	 * @dataProvider validItems
+	 * @dataProvider removingExceptItemsProvider
 	 */
-	public function testRemovingAllExcept( $itemType, array $validItems, array $otherValidItems )
+	public function testRemovingAllExcept( $itemType, array $items, array $removeExceptItems, array $expectedItems )
 	{
 		$list1 = new GenericList( $itemType );
 
-		foreach( $validItems as $item )
+		foreach ( $items as $item )
 		{
 			$list1->add( $item );
 		}
 
 		$list2 = new GenericList( $itemType );
-		foreach( $otherValidItems as $item )
+		foreach ( $removeExceptItems as $item )
 		{
 			$list2->add( $item );
 		}
 
-		$list1->addAll( $list2 );
-
 		$list1->removeAllExcept( $list2 );
-		$list2->rewind();
 
-		$this->assertEquals( $list2, $list1 );
+		$expectedList = new GenericList( $itemType );
+		foreach ( $expectedItems as $item )
+		{
+			$expectedList->add( $item );
+		}
+
+		$expectedArray = $expectedList->toArray();
+		$actualArray   = $list1->toArray();
+
+		sort( $expectedArray );
+		sort( $actualArray );
+
+		$this->assertEquals( $expectedArray, $actualArray );
 	}
-	
+
 	public function testObjects()
 	{
 		return [
 			[
-				[	new TestType( 'test1' ), new TestType( 'test2' ),	new TestType( 'test3' ),
-					new TestType( 'test1' ), new TestType( 'test2' ),	new TestType( 'test3' ) ]
-			]
+				[
+					new TestType( 'test1' ), new TestType( 'test2' ), new TestType( 'test3' ),
+					new TestType( 'test1' ), new TestType( 'test2' ), new TestType( 'test3' ),
+				],
+			],
 		];
 	}
 
@@ -204,7 +526,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIndexOfExistingItem( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -220,7 +542,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testLastIndexOfExistingItem( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -236,7 +558,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIndexOfNonExistingItem( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -250,7 +572,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testLastIndexOfNonExistingItem( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -266,7 +588,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 		$updateItem = new TestType( 'test 123456789 test' );
 
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -283,7 +605,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfToArrayReturnsCorrectArray( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -297,7 +619,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfListHasNoItemAfterClearingIt( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -313,12 +635,12 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfCurrentReturnsFalseAfterTheEndOfTheList( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
 
-		for( $i = 0; $i < count( $testItems ) - 1; $i++ )
+		for ( $i = 0; $i < count( $testItems ) - 1; $i++ )
 		{
 			$list->next();
 		}
@@ -336,7 +658,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfSettingInvalidIndexThrowsException( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -350,7 +672,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfArrayAccessMethodsAreWorkingProperly( array $testItems )
 	{
 		$list = new GenericList( TestType::class );
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -363,17 +685,20 @@ class GenericListTest extends \Codeception\TestCase\Test
 		unset($list[3]);
 		$this->assertEquals( $testItems[4], $list->get( 3 ) );
 
-		$this->assertTrue( isset( $list[1] ) );
+		$this->assertTrue( isset($list[1]) );
 	}
 
 	public function testItemsToSort()
 	{
 		return [
 			[
-				[ new TestType( 'Anton' ), new TestType( 'Bar' )	, new TestType( 'B�r' ), new TestType( 'Camel' ),
-					new TestType( 'camel' ), new TestType( '123' ), new TestType( '$Toll' ), new TestType( '!Abendessen' ),
-					new TestType( 'Anton' ) ]
-			]
+				[
+					new TestType( 'Anton' ), new TestType( 'Bar' ), new TestType( 'B�r' ), new TestType( 'Camel' ),
+					new TestType( 'camel' ), new TestType( '123' ), new TestType( '$Toll' ),
+					new TestType( '!Abendessen' ),
+					new TestType( 'Anton' ),
+				],
+			],
 		];
 	}
 
@@ -385,9 +710,9 @@ class GenericListTest extends \Codeception\TestCase\Test
 		shuffle( $testItemsToSort );
 
 		$sorter = new ByNameSorter( SORT_ASC );
-		$list = new GenericList( TestType::class );
+		$list   = new GenericList( TestType::class );
 
-		foreach( $testItemsToSort as $testItem )
+		foreach ( $testItemsToSort as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -407,16 +732,16 @@ class GenericListTest extends \Codeception\TestCase\Test
 		shuffle( $testItemsToSort );
 
 		$sorter = new ByNameSorter( SORT_DESC );
-		$list = new GenericList( TestType::class );
+		$list   = new GenericList( TestType::class );
 
-		foreach( $testItemsToSort as $testItem )
+		foreach ( $testItemsToSort as $testItem )
 		{
 			$list->add( $testItem );
 		}
 
 		$list->sortBy( $sorter );
 
-		rsort ( $testItemsToSort );
+		rsort( $testItemsToSort );
 
 		$this->assertEquals( $testItemsToSort, $list->toArray() );
 	}
@@ -428,7 +753,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	{
 		$list = new GenericList( TestType::class );
 
-		foreach( $testItems as $testItem )
+		foreach ( $testItems as $testItem )
 		{
 			$list->add( $testItem );
 		}
@@ -452,9 +777,9 @@ class GenericListTest extends \Codeception\TestCase\Test
 					[ new TestType( 'Höre Musik nicht gern' ), false ],
 					[ new TestType( 'Musik höre ich gern' ), true ],
 					[ new TestType( 'DAS ist Musik' ), false ],
-					[ new TestType( 'Musikhörer' ), true ]
-				]
-			]
+					[ new TestType( 'Musikhörer' ), true ],
+				],
+			],
 		];
 	}
 
@@ -463,14 +788,14 @@ class GenericListTest extends \Codeception\TestCase\Test
 	 */
 	public function testFindAllByBeginningName( $typeName, $beginningOfTheNameToFilter, array $testTypes )
 	{
-		$validTypes = [];
+		$validTypes = [ ];
 
 		$list = new GenericList( $typeName );
-		foreach( $testTypes as $testType )
+		foreach ( $testTypes as $testType )
 		{
 			$list->add( $testType[0] );
 
-			if( $testType[1] )
+			if ( $testType[1] )
 			{
 				$validTypes[] = $testType[0];
 			}
@@ -486,14 +811,14 @@ class GenericListTest extends \Codeception\TestCase\Test
 	 */
 	public function testFindByBeginningName( $typeName, $beginningOfTheNameToFilter, array $testTypes )
 	{
-		$validTypes = [];
+		$validTypes = [ ];
 
 		$list = new GenericList( $typeName );
-		foreach( $testTypes as $testType )
+		foreach ( $testTypes as $testType )
 		{
 			$list->add( $testType[0] );
 
-			if( $testType[1] )
+			if ( $testType[1] )
 			{
 				$validTypes[] = $testType[0];
 			}
@@ -509,14 +834,14 @@ class GenericListTest extends \Codeception\TestCase\Test
 	 */
 	public function testFindLastByBeginningName( $typeName, $beginningOfTheNameToFilter, array $testTypes )
 	{
-		$validTypes = [];
+		$validTypes = [ ];
 
 		$list = new GenericList( $typeName );
-		foreach( $testTypes as $testType )
+		foreach ( $testTypes as $testType )
 		{
 			$list->add( $testType[0] );
 
-			if( $testType[1] )
+			if ( $testType[1] )
 			{
 				$validTypes[] = $testType[0];
 			}
@@ -533,7 +858,7 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfFindWithoutAnyMatchReturnsNull( $typeName, $beginningOfTheNameToFilter, array $testTypes )
 	{
 		$list = new GenericList( $typeName );
-		foreach( $testTypes as $testType )
+		foreach ( $testTypes as $testType )
 		{
 			$list->add( $testType[0] );
 		}
@@ -547,11 +872,19 @@ class GenericListTest extends \Codeception\TestCase\Test
 	public function testIfFindLastWithoutAnyMatchReturnsNull( $typeName, $beginningOfTheNameToFilter, array $testTypes )
 	{
 		$list = new GenericList( $typeName );
-		foreach( $testTypes as $testType )
+		foreach ( $testTypes as $testType )
 		{
 			$list->add( $testType[0] );
 		}
 
 		$this->assertNull( $list->findLast( new BeginningNameFilter( str_rot13( $beginningOfTheNameToFilter ) ) ) );
+	}
+
+	/**
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
+	 */
+	public function testIfInvalidTypeThrowsException()
+	{
+		new GenericList( 'invalid' );
 	}
 }
