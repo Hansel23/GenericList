@@ -100,12 +100,12 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 		{
 			if ( $this->itemsEquals( $currentItem, $item ) )
 			{
-				$this->removeByIndex( $currentIndex );
-
-				break;
+				$this->removeByIndexWithoutReindexing( $currentIndex );
 			}
 		}
-
+		
+		$this->reIndex();
+		
 		return $this;
 	}
 
@@ -120,8 +120,16 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 
 		foreach ( $list as $listIndex => $listItem )
 		{
-			$this->remove( $listItem );
+			foreach ( $this->items as $currentIndex => $currentItem )
+			{
+				if ( $this->itemsEquals( $currentItem, $listItem ) )
+				{
+					$this->removeByIndexWithoutReindexing( $currentIndex );
+				}
+			}			
 		}
+
+		$this->reIndex();
 
 		return $this;
 	}
@@ -435,15 +443,18 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function validateListType( ListsItems $list )
 	{
-		if ( $list->getItemType() != $this->getItemType() )
+		$validItemType = $this->getItemType();
+		$itemType      = $list->getItemType();
+		
+		if ( $itemType != $validItemType && !in_array( $validItemType, class_implements( $itemType ) ) )
 		{
 			throw new InvalidTypeException
 			(
 				sprintf
 				(
 					'List with items of type %s expected, list with items of type %s given',
-					$this->getItemType(),
-					$list->getItemType()
+					$validItemType,
+					$itemType
 				)
 			);
 		}
@@ -456,7 +467,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function validateIndex( $index )
 	{
-		if ( !is_int( $index ) || $index < 0 || $index >= $this->count() )
+		if ( !is_int( $index ) || $index < 0 || $index >= $this->itemCount )
 		{
 			throw new InvalidIndexException( sprintf( 'Index %s does not exist in the list', $index ) );
 		}
@@ -519,6 +530,8 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	private function reIndex()
 	{
 		$this->items = array_values( $this->items );
+
+		$this->itemCount = count( $this->items );
 	}
 
 	/**
@@ -532,8 +545,6 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 		$this->validateIndex( $index );
 
 		unset($this->items[ $index ]);
-
-		$this->itemCount--;
 
 		return $this;
 	}
