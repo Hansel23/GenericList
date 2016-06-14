@@ -26,7 +26,7 @@ class IntegerListTest extends \Codeception\TestCase\Test
 	public function ValidItemProvider()
 	{
 		return [
-			[ 1, 0, 10000, -324234 ],
+			[ 1, 0, 10000, -324234, PHP_INT_MAX ],
 		];
 	}
 
@@ -39,5 +39,39 @@ class IntegerListTest extends \Codeception\TestCase\Test
 		$integerList->add( $item );
 
 		$this->assertNotEquals( -1, $integerList->indexOf( $item ) );
+	}
+	
+	public function ValidIntegerArrayProvider()
+	{
+		return [
+			[ [ 1, -1, 100, 999999 ], [ PHP_INT_MAX, 1, -1 ] ],
+		];
+	}
+
+	/**
+	 * @dataProvider ValidIntegerArrayProvider
+	 */
+	public function testCreatingNumericListFromArray( array $integerArray )
+	{
+		$stringList = IntegerList::fromArray( $integerArray );
+
+		$this->assertEquals( count( $integerArray ), $stringList->count() );
+		$this->assertEquals( $integerArray, $stringList->toArray() );
+	}
+
+	public function InvalidArrayProvider()
+	{
+		return [
+			[ [ 1, false ], [ true, 0 ], [ 1, 1.0 ], [ [ ] ] ],
+		];
+	}
+
+	/**
+	 * @dataProvider InvalidArrayProvider
+	 * @expectedException \Hansel23\GenericLists\Exceptions\InvalidTypeException
+	 */
+	public function testIfCreatingFromInvalidArrayThrowsException( array $invalidArray )
+	{
+		IntegerList::fromArray( $invalidArray );
 	}
 }

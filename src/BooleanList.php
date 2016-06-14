@@ -27,4 +27,21 @@ final class BooleanList	extends AbstractList
 	{
 		return $this->typeName;
 	}
+
+	/**
+	 * @param array $booleans
+	 *
+	 * @return static
+	 */
+	public static function fromArray( array $booleans )
+	{
+		$list = new static();
+
+		foreach( $booleans as $boolean )
+		{
+			$list->add( $boolean );
+		}
+
+		return $list;
+	}
 }
