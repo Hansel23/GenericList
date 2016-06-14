@@ -18,17 +18,31 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	/**
 	 * @var array
 	 */
-	protected $items = [ ];
+	private $items = [ ];
 
 	/**
 	 * @var int
 	 */
-	protected $currentPosition = 0;
+	private $currentPosition = 0;
 
 	/**
 	 * @var int
 	 */
-	protected $itemCount = 0;
+	private $itemCount = 0;
+
+	/**
+	 * @param $item
+	 *
+	 * @return bool
+	 */
+	abstract protected function isItemValid( $item );
+
+	/**
+	 * @param ListsItems $list
+	 *
+	 * @return bool
+	 */
+	abstract protected function isValidList( ListsItems $list );
 
 	/**
 	 * @param $item
@@ -298,7 +312,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	public function next()
 	{
-		$this->currentPosition++;
+		++$this->currentPosition;
 	}
 
 	/**
@@ -362,7 +376,8 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	public function findAll( FindsItems $filter )
 	{
-		$foundItems = new static( $this->getItemType() );
+		$foundItems = clone $this;
+		$foundItems->clear();
 
 		foreach ( $this->items as $item )
 		{
@@ -400,14 +415,7 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function getType( $item )
 	{
-		if ( is_object( $item ) )
-		{
-			return get_class( $item );
-		}
-		else
-		{
-			return gettype( $item );
-		}
+		return is_object( $item ) ? get_class( $item ) : gettype( $item );
 	}
 
 	/**
@@ -417,13 +425,12 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function validateItemType( $item )
 	{
-		$validItemType = $this->getItemType();
-		$itemType      = $this->getType( $item );
-
-		if ( $itemType != $this->getItemType() && !($item instanceof $validItemType) )
+		if ( !$this->isItemValid( $item ) ) 
 		{
 			throw new InvalidTypeException(
-				sprintf( 'Item of type %s expected, item of type %s given', $validItemType, $itemType )
+				sprintf( 
+					'Item of type %s expected, item of type %s given', 	$this->getItemType(), $this->getType( $item ) 
+				)
 			);
 		}
 	}
@@ -435,19 +442,14 @@ abstract class AbstractList implements ListsItems, ArrayAccess
 	 */
 	protected function validateListType( ListsItems $list )
 	{
-		$validItemType = $this->getItemType();
-
-		if (
-			$list->getItemType() != $validItemType
-			&& !(in_array( $validItemType, class_implements( $list->getItemType() ) ))
-		)
+		if ( !$this->isValidList( $list ) )
 		{
 			throw new InvalidTypeException
 			(
 				sprintf
 				(
 					'List with items of type %s expected, list with items of type %s given',
-					$validItemType,
+					$this->getItemType(),
 					$list->getItemType()
 				)
 			);
