@@ -36,7 +36,9 @@ class GenericList extends AbstractList
 	protected $itemType;
 
 	/**
-	 * @param string $itemTypeName
+	 * GenericList constructor.
+	 *
+	 * @param $itemTypeName
 	 */
 	public function __construct( $itemTypeName )
 	{

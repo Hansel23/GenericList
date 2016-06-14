@@ -1,37 +1,39 @@
 <?php
 namespace Hansel23\GenericLists;
 
-use Hansel23\GenericLists\Exceptions\InvalidTypeException;
-
 /**
  * Class NumericList
  *
  * @package Hansel23\GenericLists
  */
-final class NumericList	extends GenericList
+final class NumericList	extends AbstractList
 {
-	/**
-	 * StringList constructor.
-	 */
-	public function __construct()
+	private $typeName = 'numeric';
+
+	protected function isItemValid( $item )
 	{
-		parent::__construct( 'numeric' );
+		return is_numeric( $item );
+	}
+
+	public function getItemType()
+	{
+		return $this->typeName;
 	}
 
 	/**
-	 * @param $item
+	 * @param array $numerics
 	 *
-	 * @throws InvalidTypeException
+	 * @return static
 	 */
-	protected function validateItemType( $item )
+	public static function fromArray( array $numerics )
 	{
-		if ( $itemType = !is_numeric( $item ) )
-		{
-			$itemType = $this->getType( $item );
+		$list = new static();
 
-			throw new InvalidTypeException(
-				sprintf( 'Numeric item expected, item of type %s given', $itemType )
-			);
+		foreach( $numerics as $numeric )
+		{
+			$list->add( $numeric );
 		}
+
+		return $list;
 	}
 }

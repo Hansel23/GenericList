@@ -6,14 +6,26 @@ namespace Hansel23\GenericLists;
  *
  * @package Hansel23\GenericLists
  */
-final class StringList extends GenericList
+final class StringList extends AbstractList
 {
+	private $typeName;
+
 	/**
 	 * StringList constructor.
 	 */
 	public function __construct()
 	{
-		parent::__construct( gettype('') );
+		$this->typeName = gettype( '' );
+	}
+
+	protected function isItemValid( $item )
+	{
+		return is_string( $item );
+	}
+
+	public function getItemType()
+	{
+		return $this->typeName;
 	}
 
 	/**
